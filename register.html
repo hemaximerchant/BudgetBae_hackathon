@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BudgetBae - Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo">
+                <span class="logo-icon">💸</span>
+                <span class="logo-text">BudgetBae</span>
+            </div>
+            <h1>Join the financial glow up</h1>
+            <p class="subtitle">Fr fr, your wallet's about to be living its best life</p>
+        </div>
+        
+        <div class="login-form-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form class="login-form" method="POST" action="{{ url_for('register') }}">
+                <div class="form-group">
+                    <label for="username">Full Name (government name)</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email (slide in notifications here)</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password (make it bussin)</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password (one more time for the vibes)</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>What's your vibe? (choose your financial personality)</label>
+                    <div class="user-type-container">
+                        <div class="user-type-option">
+                            <input type="radio" id="student" name="user_type" value="student" required>
+                            <label for="student" class="user-type-label">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span>Student</span>
+                                <span class="type-desc">Ramen budget, champagne dreams</span>
+                            </label>
+                        </div>
+                        <div class="user-type-option">
+                            <input type="radio" id="professional" name="user_type" value="professional" required>
+                            <label for="professional" class="user-type-label">
+                                <i class="fas fa-briefcase"></i>
+                                <span>Working Professional</span>
+                                <span class="type-desc">Adulting but make it fun</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="login-button">Let's Gooo! 🚀</button>
+            </form>
+            
+            <div class="login-footer">
+                <p>Already in the squad? <a href="{{ url_for('login') }}">Login and slay</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

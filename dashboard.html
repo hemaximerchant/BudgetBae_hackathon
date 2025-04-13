@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BudgetBae - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Top Navigation Bar -->
+        <header class="top-nav">
+            <div class="logo">
+                <span class="logo-icon">💸</span>
+                <span class="logo-text">BudgetBae</span>
+            </div>
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search for the tea...">
+            </div>
+            <div class="nav-actions">
+                <button class="icon-button" title="Add new expense"><i class="fas fa-plus"></i></button>
+                <button class="icon-button" title="Notifications"><i class="fas fa-bell"></i></button>
+                <div class="user-avatar">
+                    <img src="{{ url_for('static', filename='img/avatar.png') }}" alt="{{ user.username }}">
+                </div>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav>
+                    <div class="sidebar-section">
+                        <button class="sidebar-header">
+                            <span>My Vibe</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="sidebar-section">
+                        <button class="sidebar-header active">
+                            <span>Main Character Energy</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        
+                        <div class="sidebar-menu">
+                            <a href="#" class="sidebar-item active">
+                                <i class="fas fa-home"></i>
+                                <span>Dashboard</span>
+                            </a>
+                            <a href="#" class="sidebar-item">
+                                <i class="fas fa-plane"></i>
+                                <span>Trips</span>
+                            </a>
+                            <a href="#" class="sidebar-item">
+                                <i class="fas fa-file-alt"></i>
+                                <span>Receipts</span>
+                            </a>
+                            <a href="#" class="sidebar-item">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Cash Money</span>
+                            </a>
+                            <a href="#" class="sidebar-item">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Plastic Fantastic</span>
+                            </a>
+                            <a href="#" class="sidebar-item">
+                                <i class="fas fa-piggy-bank"></i>
+                                <span>Savings Goals</span>
+                            </a>
+                            <a href="#" class="sidebar-item">
+                                <i class="fas fa-chart-pie"></i>
+                                <span>Stonks 📈</span>
+                            </a>
+                            <a href="#" class="sidebar-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Settings</span>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            </aside>
+
+            <!-- Dashboard Content -->
+            <main class="dashboard">
+                <div class="welcome-banner">
+                    <h2>What's good, {{ user.username }}! <span class="emoji">{{ '🎓' if user.user_type == 'student' else '💼' }}</span></h2>
+                    <p>{{ user_greeting }}</p>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <!-- Spend Summary -->
+                    <div class="card spend-summary">
+                        <h2 class="card-title">THE DAMAGE REPORT</h2>
+                        <div class="chart-container">
+                            <canvas id="spendChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Overall Summary -->
+                    <div class="card overall-summary">
+                        <h2 class="card-title">VIBE CHECK SUMMARY</h2>
+                        <div class="summary-items">
+                            <div class="summary-item">
+                                <div class="summary-icon red">
+                                    <i class="fas fa-file-invoice"></i>
+                                </div>
+                                <div class="summary-details">
+                                    <p class="summary-label">Total Spent</p>
+                                    <p class="summary-value">${{ total_expense }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-item">
+                                <div class="summary-icon black">
+                                    <i class="fas fa-credit-card"></i>
+                                </div>
+                                <div class="summary-details">
+                                    <p class="summary-label">{{ 'Textbook Money' if user.user_type == 'student' else 'Coffee Budget' }}</p>
+                                    <p class="summary-value">${{ advances }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-item">
+                                <div class="summary-icon gray">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                </div>
+                                <div class="summary-details">
+                                    <p class="summary-label">Money Back</p>
+                                    <p class="summary-value">${{ reimbursements }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-item">
+                                <div class="summary-icon blue">
+                                    <i class="fas fa-plane"></i>
+                                </div>
+                                <div class="summary-details">
+                                    <p class="summary-label">{{ 'Spring Break Plans' if user.user_type == 'student' else 'Business Trips' }}</p>
+                                    <p class="summary-value">{{ total_trips }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Policy Violations -->
+                    <div class="card policy-violations">
+                        <h2 class="card-title">FINANCIAL RED FLAGS 🚩</h2>
+                        <div class="chart-container">
+                            <canvas id="policyChart"></canvas>
+                        </div>
+                        <div class="policy-legend">
+                            <div class="legend-item">
+                                <span class="legend-color red"></span>
+                                <span class="legend-text">(35.14%)-Spent too much on {{ 'Starbucks' if user.user_type == 'student' else 'lunch' }}</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color black"></span>
+                                <span class="legend-text">(32.43%)-Forgot the receipts</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color blue"></span>
+                                <span class="legend-text">(32.43%)-{{ 'Textbook' if user.user_type == 'student' else 'Business' }} expense limit</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Spending Categories -->
+                    <div class="card top-users">
+                        <h2 class="card-title">WHERE'S THE MONEY GOING?</h2>
+                        <div class="user-list">
+                            {% for category in top_categories %}
+                            <div class="user-item">
+                                <div class="category-icon">
+                                    <i class="{{ category.icon }}"></i>
+                                </div>
+                                <div class="user-info">
+                                    <p class="user-name">{{ category.name }}</p>
+                                    <p class="user-email">${{ category.amount }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Pending Trips -->
+                    <div class="card pending-trips">
+                        <h2 class="card-title">{{ 'UPCOMING ADVENTURES' if user.user_type == 'student' else 'BUSINESS TRIPS' }}</h2>
+                        <div class="trips-header">
+                            <span class="approver-label">DESTINATION</span>
+                            <span class="count-label">WHEN</span>
+                        </div>
+                        <div class="trips-list">
+                            {% for trip in pending_trips %}
+                            <div class="trip-item">
+                                <div class="approver-info">
+                                    <div class="trip-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="user-info">
+                                        <p class="user-name">{{ trip.destination }}</p>
+                                        <p class="user-email">{{ trip.purpose }}</p>
+                                    </div>
+                                </div>
+                                <div class="trip-count">{{ trip.date }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Meme of the Day -->
+                    <div class="card meme-card">
+                        <h2 class="card-title">FINANCIAL MOOD</h2>
+                        <div class="meme-container">
+                            <img src="{{ meme_url }}" alt="Financial Meme" class="meme-image">
+                            <p class="meme-caption">{{ meme_caption }}</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
